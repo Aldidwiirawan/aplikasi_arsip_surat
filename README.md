@@ -86,20 +86,23 @@ Buka: http://127.0.0.1:8000
 
 
 ### 7. Screenshot
+
 ### Arsip
-![Arsip](screenshot/arsip-index.png)
-![Tambah Arsip](screenshot/arsip-tambah.png)
-![Hapus Arsip](screenshot/arsip-hapus.png)
-![Lihat Detail Arsip](screenshot/arsip-lihat.png)
-![Edit Arsip](screenshot/arsip-edit.png)
+![Arsip](screenshot/Arsip-index.png)
+![Unggah Arsip](screenshot/Arsip-Unggah.png)
+![Hapus Arsip](screenshot/Arsip-hapus.png)
+![Lihat Detail Arsip](screenshot/Arsip-lihat.png)
+![Ubah Arsip](screenshot/Arsip-ubah.png)
 
 ### Kategori
-![Kategori](screenshot/kategori-index.png)
-![Tambah Kategori](screenshot/kategori-tambah.png)
-![Edit Kategori](screenshot/kategori-edit.png)
+![Kategori](screenshot/Category-index.png)
+![Tambah Kategori](screenshot/Category-create.png)
+![Edit Kategori](screenshot/Category-edit.png)
+![Hapus Kategori](screenshot/Category-hapus.png)
 
 ### About
-![About](screenshot/about.png)
+![About](screenshot/About.png)
+
 
 ---
 
