@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>Kategori Surat</h1>
-    <p>Berikut ini adalah kategori yang bisa digunakan untuk melabeli surat. Klik “Tambah” pada kolom aksi untuk menambahkan
+    <p>Berikut ini adalah kategori yang bisa digunakan untuk melabeli surat. Klik "Tambah" pada kolom aksi untuk menambahkan
         kategori baru.</p>
 
     <form class="toolbar" method="get">
@@ -21,22 +21,22 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($categories as $c)
+            @foreach ($categories as $c)
                 <tr>
                     <td>{{ $c->id }}</td>
                     <td>{{ $c->name }}</td>
                     <td>{{ $c->description }}</td>
                     <td class="actions">
-                        <form action="{{ route('categories.destroy', $c) }}" method="post" style="display:inline"
-                            onsubmit="return confirm('Hapus kategori ini?')">
-                            @csrf @method('DELETE')
-                            <button class="btn-red" type="submit">Hapus</button>
-                        </form>
                         <a class="btn-blue" href="{{ route('categories.edit', $c) }}">Edit</a>
+                        <form action="{{ route('categories.destroy', $c) }}" method="post" class="delete-form"
+                            style="display:inline">
+                            @csrf @method('DELETE')
+                            <button type="button" class="btn-red btn-delete">Hapus</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
-            @if(!$categories->count())
+            @if (!$categories->count())
                 <tr>
                     <td colspan="4" style="text-align:center;padding:20px">Tidak ada data.</td>
                 </tr>
@@ -45,4 +45,32 @@
     </table>
 
     <div style="margin-top:12px">{{ $categories->links() }}</div>
+    
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.querySelectorAll(".btn-delete").forEach(function(button) {
+                    button.addEventListener("click", function(e) {
+                        e.preventDefault();
+                        let form = this.closest("form");
+                        Swal.fire({
+                            title: 'Konfirmasi Hapus',
+                            text: "Apakah Anda yakin ingin menghapus kategori ini?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Ya, Hapus',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+    @endpush
 @endsection

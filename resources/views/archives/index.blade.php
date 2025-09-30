@@ -61,21 +61,39 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const dlg = document.getElementById('confirmDlg');
-        let currentDeleteForm = null;
-
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', e => {
-                currentDeleteForm = e.target.closest('.frm-delete');
-                dlg.showModal();
-            })
+                e.preventDefault();
+                const form = e.target.closest('.frm-delete');
+
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Data arsip surat ini akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
         });
 
-        document.getElementById('btnCancel').onclick = () => dlg.close();
-        document.getElementById('btnOk').onclick = () => {
-            dlg.close();
-            if (currentDeleteForm) currentDeleteForm.submit();
-        };
+        // Contoh notifikasi sukses setelah redirect
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
     </script>
 @endpush
