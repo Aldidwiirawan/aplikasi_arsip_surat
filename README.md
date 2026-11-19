@@ -1,147 +1,157 @@
-# Judul : SI-Arsip (Sistem Informasi Arsip Surat Desa Karangduren)
+# 📂 SI-Arsip — Digital Letter Archive System
 
-# 🎯 Tujuan
-Aplikasi ini dibuat untuk membantu perangkat desa dalam *mengelola arsip surat* secara digital agar lebih rapi, mudah dicari, dan aman.  
-Dengan adanya sistem ini, pengarsipan tidak lagi dilakukan secara manual menggunakan map atau rak, tetapi terkomputerisasi sehingga menghemat waktu dan tenaga.
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/Database-MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
----
-
-# ✨ Fitur Utama
-- 📂 *Manajemen Arsip Surat*
-  - Unggah, lihat, unduh, dan hapus file PDF.
-  - Pencarian arsip berdasarkan judul.
-- 🗂 *Kategori Surat*
-  - CRUD kategori (ID otomatis).
-- 👀 *Pratinjau PDF*
-  - Bisa dilihat langsung tanpa diunduh (inline iframe).
-- 🗑 *Konfirmasi Hapus*
-  - Modal konfirmasi sebelum menghapus data.
-- ℹ *About Page*
-  - Menampilkan identitas pembuat dan tanggal pembuatan.
+> **SI-Arsip** (Sistem Informasi Arsip Surat) is a web application built with **Laravel 12** for **Karangduren Village** to archive official letters digitally. Staff can upload letters as PDF files, preview them in the browser, organize them by category, and find them quickly by title.
 
 ---
 
-### 1. Kebutuhan
-* PHP 8.2+
-* MySQL / MariaDB (atau sesuaikan .env bila pakai SQLite)
-* Composer
-* Laravel
+## 📌 Project Overview
 
-### 2. Persiapan Database (MySQL)
-Jika database si_arsip belum ada, bisa buat manual:
+Village letters were previously archived by hand in folders and shelves, which made them slow to find and easy to misplace. SI-Arsip moves the archive into a computerized system so letters are stored neatly, easy to search, and kept safe — saving the staff time and effort.
 
-sql
-SOURCE database/init/si_arsip.sql;
+---
 
+## 🚀 Key Features
 
-Atau jalankan sendiri di client:
+- **Letter archive management** — upload, view, edit, download, and delete letters stored as PDF files (max 5 MB each), with letter number, category, and title.
+- **Inline PDF preview** — read a letter directly in the browser without downloading it.
+- **Search** — find archived letters by title.
+- **Letter categories** — create, edit, and delete categories (e.g. *Undangan*, *Pengumuman*, *Nota Dinas*, *Pemberitahuan*).
+- **Delete confirmation** — a confirmation modal before any data is deleted.
+- **About page** — shows the developer's identity and the date the app was made.
 
-sql
-CREATE DATABASE IF NOT EXISTS si_arsip CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+---
 
+## 🛠️ Technology Stack
 
-### 3. Konfigurasi .env
-Salin file contoh:
-bash
-copy .env.example .env
+| Component | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Framework** | [Laravel 12](https://laravel.com/) (PHP 8.2) | Web application |
+| **Database** | MySQL / MariaDB | Archive and category data |
+| **Views** | Blade with custom CSS | User interface |
+| **File Storage** | Laravel public disk (`storage/app/public/pdf`) | Uploaded PDF files |
 
-Isi variabel penting (contoh default Laragon / XAMPP):
+---
 
+## 📁 Project Structure
+
+```text
+app/
+├── Http/Controllers/
+│   ├── ArchiveController.php    # Archive CRUD, search, download
+│   └── CategoryController.php   # Category CRUD
+└── Models/                      # Archive, Category, User
+resources/views/
+├── archives/                    # Archive list, upload, detail (PDF preview), edit
+├── categories/                  # Category list, create, edit
+├── about.blade.php              # About page
+└── layouts/app.blade.php        # Main layout
+routes/web.php                   # Archive, category, and about routes
+aplikasi_arsip.sql               # MySQL database dump (schema + default categories)
+screenshot/                      # Application screenshots
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### Prerequisites
+- PHP 8.2+ and Composer
+- MySQL / MariaDB (for example via Laragon or XAMPP)
+
+### 1. Clone and install
+```bash
+git clone https://github.com/Aldidwiirawan/aplikasi_arsip_surat.git
+cd aplikasi_arsip_surat
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+### 2. Prepare the database
+Create a database named `aplikasi_arsip` and import the dump from the project root:
+```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS aplikasi_arsip CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p aplikasi_arsip < aplikasi_arsip.sql
+```
+The dump creates the `archives` and `categories` tables and adds four default categories: *Undangan*, *Pengumuman*, *Nota Dinas*, and *Pemberitahuan*.
+
+> The Laravel migrations in this repository only create the default framework tables, so importing `aplikasi_arsip.sql` is the required setup step.
+
+### 3. Link the storage folder
+```bash
+php artisan storage:link
+```
+Uploaded PDFs are stored in `storage/app/public/pdf` (created automatically on the first upload).
+
+---
+
+## 🔐 Environment Variables
+
+Example values for a default Laragon / XAMPP setup:
+
+```env
 APP_NAME="SI-Arsip"
 APP_TIMEZONE=Asia/Jakarta
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=si_arsip
+DB_DATABASE=aplikasi_arsip
 DB_USERNAME=root
 DB_PASSWORD=
+
 FILESYSTEM_DISK=public
 SESSION_DRIVER=database
 CACHE_STORE=database
 QUEUE_CONNECTION=database
+```
 
+---
 
-Generate key:
-bash
-php artisan key:generate
+## ▶️ How to Run
 
-
-### 4. Migrasi & Seeder
-bash
-php artisan migrate --seed
-
-Seeder akan menambahkan 4 kategori default: Undangan, Pengumuman, Nota Dinas, Pemberitahuan.
-
-### 5. Storage Link
-bash
-php artisan storage:link
-
-Pastikan folder upload PDF: storage/app/public/pdf (dibuat otomatis saat unggah pertama).
-
-### 6. Menjalankan Aplikasi
-bash
+```bash
 php artisan serve
+```
+Open `http://127.0.0.1:8000`.
 
-Buka: http://127.0.0.1:8000
+### Quick test
+1. Download sample PDF letters from [this Google Drive folder](https://drive.google.com/drive/folders/1RVz1JbeoEF4AQjOu5U-GVtCi4HOdXzec?usp=drive_link).
+2. Upload them through the **"Arsipkan Surat..."** menu (keep each file under 5 MB).
+3. If the PDF preview does not appear, make sure `php artisan storage:link` has been run and the file is in `storage/app/public/pdf`.
 
+---
 
-### 7. Screenshot
+## 🖼️ Screenshots
 
-### Arsip
-![Arsip](screenshot/Arsip-index.png)
-![Unggah Arsip](screenshot/Arsip-Unggah.png)
-![Hapus Arsip](screenshot/Arsip-hapus.png)
-![Lihat Detail Arsip](screenshot/Arsip-lihat.png)
-![Ubah Arsip](screenshot/Arsip-ubah.png)
+### Archive
+| List | Upload |
+| :---: | :---: |
+| ![Archive list](screenshot/Arsip-index.png) | ![Upload archive](screenshot/Arsip-Unggah.png) |
+| **Detail & PDF preview** | **Edit** |
+| ![Archive detail](screenshot/Arsip-lihat.png) | ![Edit archive](screenshot/Arsip-ubah.png) |
+| **Delete confirmation** | |
+| ![Delete archive](screenshot/Arsip-hapus.png) | |
 
-### Kategori
-![Kategori](screenshot/Category-index.png)
-![Tambah Kategori](screenshot/Category-create.png)
-![Edit Kategori](screenshot/Category-edit.png)
-![Hapus Kategori](screenshot/Category-hapus.png)
+### Categories
+| List | Create |
+| :---: | :---: |
+| ![Category list](screenshot/Category-index.png) | ![Create category](screenshot/Category-create.png) |
+| **Edit** | **Delete confirmation** |
+| ![Edit category](screenshot/Category-edit.png) | ![Delete category](screenshot/Category-hapus.png) |
 
 ### About
-![About](screenshot/About.png)
-
-
----
-
-### 8. Dummy Data Arsip Surat
-Kumpulan contoh/dummy file PDF untuk diarsipkan dapat diakses di Google Drive:
-
-https://drive.google.com/drive/folders/1RVz1JbeoEF4AQjOu5U-GVtCi4HOdXzec?usp=drive_link
-
-Unduh beberapa file PDF tersebut lalu unggah melalui menu "Arsipkan Surat..." untuk pengujian.
-
-### 9. Catatan Pencarian
-Pencarian surat mengikuti requirement.
-
-### 10. Testing Singkat
-Unggah PDF contoh kecil (<2MB). Jika pratinjau tidak muncul, cek:
-* Symlink storage sudah dibuat
-* File berada di storage/app/public/pdf
-
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
-
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+![About page](screenshot/About.png)
 
 ---
+
+## 👨‍💻 Author
+
+**Aldi Dwi Irawan** — individual project, built for the LSP Polinema software programming competency assessment
+- GitHub: [@Aldidwiirawan](https://github.com/Aldidwiirawan)
+- Portfolio: [aldidwiirawan.vercel.app](https://aldidwiirawan.vercel.app)
+- Email: aldidwiirawan2004@gmail.com
